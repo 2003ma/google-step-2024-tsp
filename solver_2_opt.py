@@ -31,7 +31,7 @@ def solve(cities):
     return tour
 
 
-def two_opt(tour, dist, max_iterations=1000):
+def two_opt(tour, dist, max_iterations=10000):
     N = len(tour)
     improvement = True
     iteration = 0
