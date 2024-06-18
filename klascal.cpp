@@ -77,8 +77,6 @@ bool compare(const Edge& a,Edge& b){
     return a.cost<b.cost;
 }
 
-//2-opt関数
-
 
 
 
