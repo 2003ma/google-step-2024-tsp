@@ -8,10 +8,15 @@
 #include <sstream>
 
 using namespace std;
+using City=pair<double,double>;
 
 // 距離を計算する関数
 double distance(pair<double, double> city1, pair<double, double> city2) {
     return sqrt(pow(city1.first - city2.first, 2) + pow(city1.second - city2.second, 2));
+}
+
+double direction(const City& a,const City& b,const City& c){
+    return (c.first - a.first) * (b.second - a.second) - (c.second - a.second) * (b.first - a.first);
 }
 
 // ツアーを出力する関数
@@ -72,6 +77,11 @@ bool compare(const Edge& a,Edge& b){
     return a.cost<b.cost;
 }
 
+//2-opt関数
+
+
+
+
 // ツアーを計算する関数
 vector<int> solve(const vector<pair<double, double>>& cities) {
     int N = cities.size();
@@ -97,7 +107,7 @@ vector<int> solve(const vector<pair<double, double>>& cities) {
 
     //最小全域木を作る
     UnionFind uf(N);
-    vector<vector<int>> min_tree(N,vector<int>(0));
+    vector<vector<int>> mst(N);
 
     while (!edges.empty()){
         Edge edge=*edges.begin();
@@ -105,43 +115,48 @@ vector<int> solve(const vector<pair<double, double>>& cities) {
             edges.erase(edges.begin());
         }else{
             uf.unite(edge.small,edge.large);
-            min_tree[edge.small].push_back(edge.large);
+            mst[edge.small].push_back(edge.large);
+            mst[edge.large].push_back(edge.small);
             edges.erase(edges.begin());
         }
         
     }
-
-    //0から深さ優先探索をする
-    vector<int>tour;
-    vector<int>visited(N,0);
-    while(tour.size()<N){
-        
-    }
-
     
 
+    // 深さ優先探索（DFS）を使用してツアーを生成
+    vector<int> tour;
+    vector<bool> visited(N, false);
 
+    function<void(int)> dfs = [&](int v) {
+        visited[v] = true;
+        tour.push_back(v);
+        for (int u : mst[v]) {
+            if (!visited[u]) {
+                dfs(u);
+            }
+        }
+    };
 
-    int current_city = 0;
-    set<int> unvisited_cities;
-    for (int i = 1; i < N; ++i) {
-        unvisited_cities.insert(i);
+    dfs(0);  // ノード0からDFSを開始
+
+    //2_optを実装
+    for(int i=0;i<N-1;++i){
+        City c1=cities[tour[i]];
+        City c2=cities[tour[i+1]];
+        for(int j=i+1;j<N;++j){
+            City c3=cities[tour[j]];
+            City c4=cities[tour[(j+1)&N]];
+            double d1=direction(c3,c4,c1);
+            double d2=direction(c3,c4,c2);
+            double d3=direction(c1,c2,c4);
+            double d4=direction(c1,c2,c4);
+            if (((d1>0 and d2<0) or (d1<0 and d2>0) ) and((d3>0 and d4<0) or (d3<0 and d4>0))){
+               reverse(tour.begin() + i + 1, tour.begin() + j + 1);
+            }
+
+        }
     }
 
-    vector<int> tour = {current_city};
-
-    // 最も近い都市を見つける
-    while (!unvisited_cities.empty()) {
-        auto compare = [&](int city1, int city2) {
-            return dist[current_city][city1] < dist[current_city][city2];
-        };
-        auto it = min_element(unvisited_cities.begin(), unvisited_cities.end(), compare);
-        int next_city = *it;
-
-        unvisited_cities.erase(it);
-        tour.push_back(next_city);
-        current_city = next_city;
-    }
 
     return tour;
 }
