@@ -1,3 +1,5 @@
+//最小全域木+2_optによる実装
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -78,6 +80,29 @@ bool compare(const Edge& a,Edge& b){
 }
 
 
+//or_opt法によるツアーの改善
+vector<int> two_opt(vector<int> tour, const vector<vector<double>>& dist, int max_iterations = 10000) {
+    bool improvement = true;
+    int iteration = 0;
+    int N=tour.size();
+
+    while (improvement && iteration < max_iterations) {
+        improvement = false;
+        for (int i = 1; i < N - 1; ++i) {
+            for (int j = i + 1; j < N; ++j) {
+                if (j - i == 1) continue;
+                if (dist[tour[i - 1]][tour[i]] + dist[tour[j]][tour[(j + 1) % N]] > dist[tour[i - 1]][tour[j]] + dist[tour[i]][tour[(j + 1) % N]]) {
+                    reverse(tour.begin() + i, tour.begin() + j+1);
+                    improvement = true;
+                }
+            }
+        }
+        ++iteration;
+    }
+    return tour;
+}
+
+
 
 
 // ツアーを計算する関数
@@ -136,25 +161,7 @@ vector<int> solve(const vector<pair<double, double>>& cities) {
     };
 
     dfs(0);  // ノード0からDFSを開始
-
-    //2_optを実装
-    for(int i=0;i<N-1;++i){
-        City c1=cities[tour[i]];
-        City c2=cities[tour[i+1]];
-        for(int j=i+1;j<N;++j){
-            City c3=cities[tour[j]];
-            City c4=cities[tour[(j+1)&N]];
-            double d1=direction(c3,c4,c1);
-            double d2=direction(c3,c4,c2);
-            double d3=direction(c1,c2,c4);
-            double d4=direction(c1,c2,c4);
-            if (((d1>0 and d2<0) or (d1<0 and d2>0) ) and((d3>0 and d4<0) or (d3<0 and d4>0))){
-               reverse(tour.begin() + i + 1, tour.begin() + j + 1);
-            }
-
-        }
-    }
-
+    tour=two_opt(tour,dist);
 
     return tour;
 }

@@ -14,10 +14,18 @@ def distance(city1, city2):
 def verify_output():
     for challenge_number in range(CHALLENGES):
         print(f"Challenge {challenge_number}")
-        cities = read_input(f"input_{challenge_number}.csv")
+        cities = read_input(f"input/input_{challenge_number}.csv")
         N = len(cities)
-        for output_prefix in ("output", "sample/random", "sample/greedy", "sample/sa"):
-            output_file = f"{output_prefix}_{challenge_number}.csv"
+        for output_prefix in (
+            "mysolver1/output",
+            "mysolver2/output",
+            "mysolver3/output",
+            "mysolver4/output",
+            "sample/random/random",
+            "sample/greedy/greedy",
+            "sample/sa/sa",
+        ):
+            output_file = f"output/{output_prefix}_{challenge_number}.csv"
             with open(output_file) as f:
                 lines = f.readlines()
                 assert lines[0].strip() == "index"

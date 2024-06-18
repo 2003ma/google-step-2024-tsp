@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <set>
 #include <fstream>
-#include <sstream> // 追加：stringstreamのために必要
+#include <sstream>
 
 using namespace std;
 
@@ -15,7 +15,7 @@ double distance(pair<double, double> city1, pair<double, double> city2) {
 }
 
 // 2-opt法によるツアーの改善
-vector<int> two_opt(vector<int> tour, const vector<vector<double>>& dist, int max_iterations = 1000) {
+vector<int> two_opt(vector<int> tour, const vector<vector<double>>& dist, int max_iterations = 10000) {
     int N = tour.size();
     bool improvement = true;
     int iteration = 0;
@@ -26,7 +26,7 @@ vector<int> two_opt(vector<int> tour, const vector<vector<double>>& dist, int ma
             for (int j = i + 1; j < N; ++j) {
                 if (j - i == 1) continue;
                 if (dist[tour[i - 1]][tour[i]] + dist[tour[j]][tour[(j + 1) % N]] > dist[tour[i - 1]][tour[j]] + dist[tour[i]][tour[(j + 1) % N]]) {
-                    reverse(tour.begin() + i, tour.begin() + j);
+                    reverse(tour.begin() + i, tour.begin() + j + 1); 
                     improvement = true;
                 }
             }
@@ -37,14 +37,11 @@ vector<int> two_opt(vector<int> tour, const vector<vector<double>>& dist, int ma
     return tour;
 }
 
-
-
 // ツアーを出力する関数
 void print_tour(const vector<int>& tour) {
     for (int city : tour) {
         cout << city << endl;
     }
-    cout << endl;
 }
 
 // ツアーを計算する関数
@@ -78,6 +75,9 @@ vector<int> solve(const vector<pair<double, double>>& cities) {
         current_city = next_city;
     }
 
+    // 最後に出発都市に戻る
+    tour.push_back(0);
+
     // 2-opt法でツアーを改善
     tour = two_opt(tour, dist);
     return tour;
@@ -105,14 +105,8 @@ vector<pair<double, double>> read_input(const string& filename) {
         }
     }
 
-   
-    
-
     return cities;
 }
-
-
-
 
 int main(int argc, char* argv[]) {
     if (argc <= 1) {
@@ -122,9 +116,8 @@ int main(int argc, char* argv[]) {
 
     vector<pair<double, double>> cities = read_input(argv[1]);
     vector<int> tour = solve(cities);
-    cout<<"index"<<endl;
+    cout << "index" << endl;
     print_tour(tour);
-
 
     return 0;
 }
