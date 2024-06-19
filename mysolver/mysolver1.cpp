@@ -17,9 +17,7 @@ double distance(pair<double, double> city1, pair<double, double> city2) {
     return sqrt(pow(city1.first - city2.first, 2) + pow(city1.second - city2.second, 2));
 }
 
-double direction(const City& a,const City& b,const City& c){
-    return (c.first - a.first) * (b.second - a.second) - (c.second - a.second) * (b.first - a.first);
-}
+
 
 // ツアーを出力する関数
 void print_tour(const vector<int>& tour) {

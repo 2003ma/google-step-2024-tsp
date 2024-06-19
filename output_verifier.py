@@ -21,6 +21,7 @@ def verify_output():
             "mysolver2/output",
             "mysolver3/output",
             "mysolver4/output",
+            "mysolver5/output",
             "sample/random/random",
             "sample/greedy/greedy",
             "sample/sa/sa",
