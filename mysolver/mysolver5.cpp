@@ -1,3 +1,5 @@
+//焼きなまし法を2-optに組み込み、or-optを追加した
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -87,6 +89,7 @@ vector<int > simulated_annealing_2_opt(vector<int>& tour,double t_0,double cool,
                 else if(rand()<=exp(-d/t)){
                     reverse(tour.begin() + i, tour.begin() + j + 1); 
                     current_tour=tour;
+                    current_tour_length=tour_length(tour,dist);
                     improvement = true;
                 }
                 t_0=cool*t_0;
