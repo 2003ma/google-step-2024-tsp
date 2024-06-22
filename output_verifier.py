@@ -4,7 +4,7 @@ import math
 
 from common import read_input
 
-CHALLENGES = 6
+CHALLENGES = 7
 
 
 def distance(city1, city2):
@@ -17,8 +17,8 @@ def verify_output():
         cities = read_input(f"input/input_{challenge_number}.csv")
         N = len(cities)
         for output_prefix in (
-            "mysolver1/output",
-            "mysolver2/output",
+            # "mysolver1/output",
+            # "mysolver2/output",
             "mysolver3/output",
             "mysolver4/output",
             "mysolver5/output",
